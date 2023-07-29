@@ -9,16 +9,21 @@ import { useState } from "react";
 export default function App() {
   const [items, setItems] = useState([]);
 
+  //functions of the state are defined in the same component the state is defined in
   function handleAddItems(item) {
     //will be used by the form component
     setItems((items) => [...items, item]);
+  }
+
+  function handleDeleteItem(id) {
+    setItems((items) => items.filter((item) => item.id !== id));
   }
 
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} />
+      <PackingList items={items} onDeleteItem={handleDeleteItem} />
       <Stats />
     </div>
   );
@@ -76,14 +81,14 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items }) {
+function PackingList({ items, onDeleteItem }) {
   return (
     <div className="list">
       <ul>
         {items.map(
           //(i) => (<li>i.description</li>) Wrong!!
           (item) => (
-            <Item item={item} key={item.id} />
+            <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
           ) //object => <Component prop={object} />
         )}
       </ul>
@@ -91,13 +96,15 @@ function PackingList({ items }) {
   );
 }
 
-function Item({ item }) {
+function Item({ item, onDeleteItem }) {
   return (
     <li>
       <span style={{ textDecoration: item.packed ? "line-through" : "none" }}>
         {item.quantity} {item.description}
       </span>
-      <button>❌</button>
+      {/* <button onClick={onDeleteItem}>❌</button>  Wrong!!!*/}
+      <button onClick={() => onDeleteItem(item.id)}>❌</button>
+      {/*We want the function only when the even happens */}
     </li>
   );
 }
