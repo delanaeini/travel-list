@@ -73,7 +73,7 @@ function Form({ onAddItems }) {
         {/* <option value={1}>1</option>
         <option value={2}>2</option>
         <option value={3}>3</option>
-        <option value={4}>4</option>       Too long! There's a better way */}
+        <option value={4}>4</option>       Too long! There's a better way using .from() */}
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
           <option value={num} key={num}>
             {num}
@@ -94,21 +94,47 @@ function Form({ onAddItems }) {
 }
 
 function PackingList({ items, onDeleteItem, onToggleItem }) {
+  const [sortBy, setSortBy] = useState("input"); //for <Select> Element
+
+  //Another example of derived state: Sorting
+  let sortedItems;
+
+  if (sortBy === "input") sortedItems = items;
+
+  if (sortBy === "description")
+    sortedItems = items
+      .slice()
+      .sort((a, b) => a.description.localeCompare(b.description));
+  //.slice does NOT mutate the original array, while sort does.
+  //localeCompare used for sorting strings
+
+  if (sortBy === "packed")
+    sortedItems = items
+      .slice()
+      .sort((a, b) => Number(a.packed) - Number(b.packed)); //because .packed is a boolean value, Number() is used.
+
   return (
     <div className="list">
       <ul>
-        {items.map(
-          //(i) => (<li>i.description</li>) Wrong!!
-          (item) => (
-            <Item
-              item={item}
-              key={item.id}
-              onDeleteItem={onDeleteItem}
-              onToggleItem={onToggleItem}
-            />
-          ) //object => <Component prop={object} />
-        )}
+        {/* {items.map ...    changing this to sortedItems.map ... */}
+        {sortedItems.map((item) => (
+          <Item
+            item={item}
+            key={item.id}
+            onDeleteItem={onDeleteItem}
+            onToggleItem={onToggleItem}
+          />
+          //object => <Component prop={object} />
+        ))}
       </ul>
+
+      <div>
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <option value="input">Sort by input order</option>
+          <option value="description">Sort by description</option>
+          <option value="packed">Sort by packed status</option>
+        </select>
+      </div>
     </div>
   );
 }
