@@ -14,10 +14,10 @@ The app has a sorting feature which can sort the list items by input order, alph
 npm -v
 ```
 
-- Install package.json
+- Install node modules
 
 ```
-npm install package.json
+npm install
 ```
 
 - Run on local computer
